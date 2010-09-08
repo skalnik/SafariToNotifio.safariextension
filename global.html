@@ -1,3 +1,4 @@
+<script src="base64.js" type="text/javascript"></script>
 <script>
   var username = safari.extension.settings.notifoUsername;
   var apiKey   = safari.extension.settings.notifoAPIKey;
@@ -7,7 +8,18 @@
   {
     if(event.command === "send-current-page-to-notifo")
     {
-      //AJAX
+      var activeTab = safari.application.activeBrowserWindow.activeTab; 
+      var to = encodeURIComponent(username);
+      var uri = encodeURIComponent(activeTab.url);
+      var msg = encodeURIComponent(activeTab.title);
+      var title = encodeURIComponent('New URL');
+      var label = encodeURIComponent('Safari to Notifo');
+      var data = 'to=' + to + '&msg=' + msg + '&title=' + title + '&label=' + label + '&uri=' + uri;
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', 'https://api.notifo.com/v1/send_notification', true);
+      xhr.setRequestHeader("Authorization", "Basic " + Base64.encode(username+':'+apiKey));
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      xhr.send(data);
     }
   }
 
